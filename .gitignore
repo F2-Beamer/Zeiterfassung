@@ -1,0 +1,23 @@
+# Build-Ausgaben
+bin/
+obj/
+publish/
+publish-neu/
+TestResults/
+
+# Lokale Daten (Datenbank, Sicherungen, Logs)
+*.db
+*.db-shm
+*.db-wal
+backups/
+logs/
+*.log
+
+# Lokale Claude-Einstellungen
+.claude/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.suo

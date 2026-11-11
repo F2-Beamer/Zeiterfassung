@@ -1,0 +1,17 @@
+<UserControl x:Class="Zeiterfassung.Views.DateField"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Eigenes Datumsfeld: Eingabe als TT.MM.JJJJ, Pfeile für Vor/Zurück, „Heute“.
+         Ersetzt den DatePicker, dessen Kalender-Popup sich nicht dunkel einfärben lässt. -->
+    <DockPanel>
+        <Button DockPanel.Dock="Left" Content="◀" Click="OnPrevious" MinWidth="36" Margin="0,0,6,10" />
+        <Button DockPanel.Dock="Right" Content="Heute" Click="OnToday" Margin="6,0,0,10" />
+        <Button DockPanel.Dock="Right" Content="▶" Click="OnNext" MinWidth="36" Margin="6,0,0,10" />
+        <TextBox x:Name="Input"
+                 LostFocus="OnCommit"
+                 KeyDown="OnKeyDown"
+                 MinWidth="0"
+                 Margin="0,0,0,10" />
+    </DockPanel>
+</UserControl>

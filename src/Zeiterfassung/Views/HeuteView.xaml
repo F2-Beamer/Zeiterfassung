@@ -1,0 +1,116 @@
+<UserControl x:Class="Zeiterfassung.Views.HeuteView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Zeiterfassung.ViewModels"
+             xmlns:views="clr-namespace:Zeiterfassung.Views">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="1000">
+
+            <TextBlock Text="{Binding DateTitle}" Style="{StaticResource Muted}" HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding HolidayNote}"
+                       Foreground="{StaticResource BrushWarning}"
+                       HorizontalAlignment="Center"
+                       Margin="0,4,0,0" />
+
+            <!-- Timer-Bereich (Design B1: Fokus zentriert) -->
+            <TextBlock Text="{Binding TimerCustomer}"
+                       Style="{StaticResource Muted}"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Margin="0,20,0,0" />
+            <TextBlock Text="{Binding TimerClock}"
+                       Style="{StaticResource BigClock}"
+                       HorizontalAlignment="Center" />
+            <TextBlock Text="pausiert"
+                       Foreground="{StaticResource BrushWarning}"
+                       HorizontalAlignment="Center"
+                       Visibility="{Binding IsPaused, Converter={StaticResource BoolToVis}}" />
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center"
+                        Margin="0,14,0,0"
+                        Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}">
+                <Button Content="{Binding PauseButtonText}"
+                        Command="{Binding TogglePauseCommand}"
+                        Padding="18,8" />
+                <Button Content="Stoppen &amp; buchen"
+                        Style="{StaticResource AccentButton}"
+                        Command="{Binding StopAndBookCommand}" />
+            </StackPanel>
+
+            <!-- Kunden-Kacheln -->
+            <TextBlock Text="Kunde starten" Style="{StaticResource Muted}" HorizontalAlignment="Center" Margin="0,22,0,6" />
+            <ItemsControl ItemsSource="{Binding Customers}" HorizontalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel HorizontalAlignment="Center" MaxWidth="700" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Name}"
+                                Command="{Binding DataContext.StartCustomerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding Id}">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ChipButton}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}" />
+                                            <Setter Property="Background" Value="#0C4A6E" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="{Binding ErrorMessage}" Style="{StaticResource ErrorText}" HorizontalAlignment="Center" />
+
+            <!-- Kennzahlen -->
+            <UniformGrid Columns="3" Margin="0,22,0,0">
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Ist heute (netto)" Style="{StaticResource Muted}" />
+                        <TextBlock Text="{Binding ActualText}" Style="{StaticResource KpiValue}" />
+                        <ProgressBar Value="{Binding ActualPercent}" Maximum="100" Height="6" Margin="0,10,0,0"
+                                     Background="{StaticResource BrushBorder}" Foreground="{StaticResource BrushAccent}" BorderThickness="0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Soll heute" Style="{StaticResource Muted}" />
+                        <TextBlock Text="{Binding TargetText}" Style="{StaticResource KpiValue}" />
+                        <TextBlock Text="{Binding BreakText, StringFormat='Pausen heute: {0}'}" Style="{StaticResource Muted}" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Überstundenstand" Style="{StaticResource Muted}" />
+                        <TextBlock Text="{Binding OvertimeText}" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding OvertimeIsNegative}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushWarning}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding OvertimeIsNegative}" Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource BrushSuccess}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock Text="{Binding BalanceText, StringFormat='Saldo heute: {0}'}" Style="{StaticResource Muted}" Margin="0,8,0,0" />
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <!-- Manuelle Erfassung und Buchungen des Tages (gleiche Ansicht wie im Menü „Erfassung“) -->
+            <views:ErfassungView DataContext="{Binding Erfassung}" Margin="0,8,0,0" />
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
