@@ -1,0 +1,170 @@
+<UserControl x:Class="Zeiterfassung.Views.MonatView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Zeiterfassung.ViewModels">
+
+    <DockPanel>
+        <!-- Monatsnavigation -->
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Button Content="◀" Command="{Binding PreviousMonthCommand}" Padding="12,4" />
+                <TextBlock Text="{Binding MonthTitle}" Style="{StaticResource Heading}" Margin="12,0" VerticalAlignment="Center" />
+                <Button Content="▶" Command="{Binding NextMonthCommand}" Padding="12,4" />
+            </StackPanel>
+        </DockPanel>
+
+        <!-- Summen -->
+        <UniformGrid DockPanel.Dock="Top" Columns="6" Margin="0,0,0,12">
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Ist (netto)" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding ActualSum}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Soll" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding TargetSum}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Saldo Monat" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding BalanceSum}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BalanceSumTone}" Value="{x:Static vm:Tone.Positive}">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushSuccess}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BalanceSumTone}" Value="{x:Static vm:Tone.Negative}">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Überstunden am Monatsende" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding OvertimeEnd}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource KpiValue}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OvertimeEndTone}" Value="{x:Static vm:Tone.Positive}">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushSuccess}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OvertimeEndTone}" Value="{x:Static vm:Tone.Warning}">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushWarning}" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OvertimeEndTone}" Value="{x:Static vm:Tone.Negative}">
+                                        <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Urlaub in diesem Monat" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding VacationMonthText}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Resturlaub (Jahr)" Style="{StaticResource Muted}" />
+                    <TextBlock Text="{Binding VacationRemainingText}" Style="{StaticResource KpiValue}" />
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- Tabelle: ein Klick auf „Details“ öffnet den Tag mit Buchungen und Abwesenheit -->
+        <Border Style="{StaticResource Card}" Margin="0">
+            <DockPanel>
+                <Grid DockPanel.Dock="Top" Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="90" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Tag" Style="{StaticResource Muted}" />
+                    <TextBlock Grid.Column="1" Text="Hinweis" Style="{StaticResource Muted}" />
+                    <TextBlock Grid.Column="2" Text="Ist" Style="{StaticResource Muted}" HorizontalAlignment="Right" />
+                    <TextBlock Grid.Column="3" Text="Soll" Style="{StaticResource Muted}" HorizontalAlignment="Right" />
+                    <TextBlock Grid.Column="4" Text="Saldo" Style="{StaticResource Muted}" HorizontalAlignment="Right" />
+                </Grid>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Days}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ListRowBorder}" Padding="0,7">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="Transparent" />
+                                    </Border.Background>
+                                    <Grid>
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsFuture}" Value="True">
+                                                        <Setter Property="Opacity" Value="0.4" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="90" />
+                                            <ColumnDefinition Width="100" />
+                                            <ColumnDefinition Width="100" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding DateText}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsToday}" Value="True">
+                                                            <Setter Property="FontWeight" Value="Bold" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Grid.Column="1" Text="{Binding Note}" Foreground="{StaticResource BrushTextMuted}" FontSize="13" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,12,0" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Actual}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="3" Text="{Binding Target}" HorizontalAlignment="Right" />
+                                        <TextBlock Grid.Column="4" Text="{Binding Balance}" HorizontalAlignment="Right">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding BalanceTone}" Value="{x:Static vm:Tone.Positive}">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushSuccess}" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding BalanceTone}" Value="{x:Static vm:Tone.Negative}">
+                                                            <Setter Property="Foreground" Value="{StaticResource BrushDanger}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <Button Grid.Column="5" Content="Details" Margin="0,0,12,0" Padding="10,3"
+                                                HorizontalAlignment="Right" VerticalAlignment="Center"
+                                                Command="{Binding DataContext.OpenDayCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+    </DockPanel>
+</UserControl>

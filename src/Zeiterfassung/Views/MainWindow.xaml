@@ -1,0 +1,89 @@
+<Window x:Class="Zeiterfassung.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:Zeiterfassung.ViewModels"
+        xmlns:views="clr-namespace:Zeiterfassung.Views"
+        Title="Zeiterfassung"
+        Language="de-DE"
+        Width="1100"
+        Height="720"
+        MinWidth="900"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Farben des Hilfe-Menüs an das dunkle Design anpassen (Popup und Auswahl) -->
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#1E293B" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}" Color="#1E293B" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#334155" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#334155" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="{x:Static SystemColors.GrayTextBrushKey}" Color="#94A3B8" />
+        <DataTemplate DataType="{x:Type vm:HeuteViewModel}">
+            <views:HeuteView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:MonatViewModel}">
+            <views:MonatView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EinstellungenViewModel}">
+            <views:EinstellungenView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <DockPanel>
+
+        <!-- Kopfzeile mit Navigation (Design B1) -->
+        <Border DockPanel.Dock="Top" BorderBrush="{StaticResource BrushSurface}" BorderThickness="0,0,0,1" Padding="20,12">
+            <DockPanel>
+                <TextBlock Text="Zeiterfassung"
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource BrushAccent}"
+                           Margin="0,0,24,0"
+                           VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal">
+                <ItemsControl ItemsSource="{Binding NavItems}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Name}"
+                                    Margin="0,0,6,0"
+                                    Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding Name}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource NavTabButton}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource BrushSurface}" />
+                                                <Setter Property="Foreground" Value="{StaticResource BrushAccent}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Hilfe-Menü direkt neben den Navigationspunkten -->
+                <Menu Background="Transparent" VerticalAlignment="Center" Margin="0,0,0,0">
+                    <MenuItem Header="Hilfe" Padding="12,6" Background="Transparent" BorderThickness="0"
+                              Foreground="{StaticResource BrushTextMuted}">
+                        <MenuItem Header="Anleitung" Click="Anleitung_Click" />
+                        <Separator />
+                        <MenuItem Header="Version" Click="Version_Click" />
+                    </MenuItem>
+                </Menu>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <ContentControl Content="{Binding CurrentView}" Margin="20,16" />
+    </DockPanel>
+</Window>

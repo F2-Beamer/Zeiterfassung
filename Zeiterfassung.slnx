@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Zeiterfassung/Zeiterfassung.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Zeiterfassung.Tests/Zeiterfassung.Tests.csproj" />
+  </Folder>
+</Solution>
