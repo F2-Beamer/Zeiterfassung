@@ -49,6 +49,14 @@ public partial class MonatViewModel(BalanceService balance, TimeProvider time, I
     [ObservableProperty]
     private string _vacationRemainingText = "0 Tage";
 
+    /// <summary>Ein Satz über den Monat, z. B. „Im November hast du 25:00 Stunden gearbeitet. Bis zum Soll fehlen noch 15:00.“</summary>
+    [ObservableProperty]
+    private string _summaryText = string.Empty;
+
+    /// <summary>Überstunden, Urlaub und Resturlaub als eine Zeile unter dem Saldo.</summary>
+    [ObservableProperty]
+    private string _detailLine = string.Empty;
+
     [ObservableProperty]
     private Tone _balanceSumTone;
 
@@ -125,15 +133,15 @@ public partial class MonatViewModel(BalanceService balance, TimeProvider time, I
                 balanceTotal += day.BalanceMinutes;
             }
 
-            // Pro Kunde die Netto-Stunden des Tages, z. B. "Müller GmbH 7:30 · Huber AG 2:00".
+            // Pro Kunde die Netto-Stunden des Tages, z. B. "Müller GmbH 7:30, Huber AG 2:00".
             var customerSums = day.Entries
-                .GroupBy(e => e.Customer?.Name ?? "–")
+                .GroupBy(e => e.Customer?.Name ?? "Ohne Kunde")
                 .Select(g => $"{g.Key} {TimeFormat.Hm(g.Sum(e => e.NetMinutes))}");
 
-            var hint = string.Join("  |  ", new[]
+            var hint = string.Join("; ", new[]
             {
                 string.Join(", ", notes),
-                string.Join("  ·  ", customerSums)
+                string.Join(", ", customerSums)
             }.Where(part => part.Length > 0));
 
             Days.Add(new MonthRow(
@@ -160,6 +168,24 @@ public partial class MonatViewModel(BalanceService balance, TimeProvider time, I
         // Urlaub im Monat: alle Tage des Monats, auch geplante. Rest: Konto des angezeigten Jahres.
         VacationMonthText = TimeFormat.Days(days.Sum(d => d.VacationDaysUsed));
         VacationRemainingText = TimeFormat.Days(balance.GetVacation(first.Year).RemainingDays);
+
+        DetailLine = $"Überstunden am Monatsende {OvertimeEnd}, Urlaub in diesem Monat {VacationMonthText}, Resturlaub {VacationRemainingText}";
+        SummaryText = BuildSummary(first, actual, balanceTotal);
+    }
+
+    private static string BuildSummary(DateOnly first, int actualMinutes, int balanceMinutes)
+    {
+        var month = first.ToDateTime(TimeOnly.MinValue).ToString("MMMM", TimeFormat.German);
+        var worked = $"Im {month} hast du {TimeFormat.Hm(actualMinutes)} Stunden gearbeitet.";
+
+        var rest = balanceMinutes switch
+        {
+            < 0 => $"Bis zum Soll fehlen noch {TimeFormat.Hm(-balanceMinutes)}.",
+            > 0 => $"Du hast {TimeFormat.Hm(balanceMinutes)} über dem Soll.",
+            _ => "Du bist genau im Soll."
+        };
+
+        return worked + " " + rest;
     }
 
     private static Tone BalanceToneOf(int minutes) => minutes switch
