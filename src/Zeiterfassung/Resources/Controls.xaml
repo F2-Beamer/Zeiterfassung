@@ -99,7 +99,7 @@
                             <Setter TargetName="Root" Property="Background" Value="{StaticResource BrushBorder}" />
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter TargetName="Root" Property="Background" Value="#0C4A6E" />
+                            <Setter TargetName="Root" Property="Background" Value="{StaticResource BrushSelected}" />
                             <Setter Property="Foreground" Value="{StaticResource BrushTextStrong}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -148,6 +148,7 @@
 
     <!-- Primär-Button mit Akzent -->
     <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource PrimaryPillButton}">
+        <Setter Property="Foreground" Value="{StaticResource BrushSurface}" />
         <Setter Property="Margin" Value="0,0,8,8" />
     </Style>
 

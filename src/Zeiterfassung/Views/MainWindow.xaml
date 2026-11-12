@@ -12,15 +12,34 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- Farben des Hilfe-Menüs an das dunkle Design anpassen (Popup und Auswahl) -->
-        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}" Color="#1E293B" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.MenuBarBrushKey}" Color="#1E293B" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.MenuTextBrushKey}" Color="#E2E8F0" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#334155" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="#E2E8F0" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlDarkBrushKey}" Color="#334155" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="#E2E8F0" />
-        <SolidColorBrush x:Key="{x:Static SystemColors.GrayTextBrushKey}" Color="#94A3B8" />
+        <!-- Eintrag im Hilfe-Menü: eigene Optik im App-Design, unabhängig von den Windows-Menüfarben -->
+        <Style x:Key="MenuEntryButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource BrushText}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{StaticResource BrushBorder}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <DataTemplate DataType="{x:Type vm:HeuteViewModel}">
             <views:HeuteView />
         </DataTemplate>
@@ -44,42 +63,53 @@
                            Margin="0,0,24,0"
                            VerticalAlignment="Center" />
                 <StackPanel Orientation="Horizontal">
-                <ItemsControl ItemsSource="{Binding NavItems}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Content="{Binding Name}"
-                                    Margin="0,0,6,0"
-                                    Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                    CommandParameter="{Binding Name}">
-                                <Button.Style>
-                                    <Style TargetType="Button" BasedOn="{StaticResource NavTabButton}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                                <Setter Property="Background" Value="{StaticResource BrushSurface}" />
-                                                <Setter Property="Foreground" Value="{StaticResource BrushAccent}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding NavItems}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding Name}"
+                                        Margin="0,0,6,0"
+                                        Command="{Binding DataContext.NavigateCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding Name}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource NavTabButton}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource BrushSurface}" />
+                                                    <Setter Property="Foreground" Value="{StaticResource BrushAccent}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
-                <!-- Hilfe-Menü direkt neben den Navigationspunkten -->
-                <Menu Background="Transparent" VerticalAlignment="Center" Margin="0,0,0,0">
-                    <MenuItem Header="Hilfe" Padding="12,6" Background="Transparent" BorderThickness="0"
-                              Foreground="{StaticResource BrushTextMuted}">
-                        <MenuItem Header="Anleitung" Click="Anleitung_Click" />
-                        <Separator />
-                        <MenuItem Header="Version" Click="Version_Click" />
-                    </MenuItem>
-                </Menu>
+                    <!-- Hilfe direkt neben „Einstellungen“: öffnet ein eigenes Menü mit Anleitung und Version -->
+                    <Button x:Name="HilfeButton" Content="Hilfe" Style="{StaticResource NavTabButton}" Click="Hilfe_Click" />
+                    <Popup x:Name="HilfePopup"
+                           PlacementTarget="{Binding ElementName=HilfeButton}"
+                           Placement="Bottom"
+                           AllowsTransparency="True"
+                           StaysOpen="False">
+                        <Border Background="{StaticResource BrushSurface}"
+                                BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Padding="4"
+                                Margin="0,4,0,0"
+                                MinWidth="180">
+                            <StackPanel>
+                                <Button Content="Anleitung" Style="{StaticResource MenuEntryButton}" Click="Anleitung_Click" />
+                                <Button Content="Version" Style="{StaticResource MenuEntryButton}" Click="Version_Click" />
+                            </StackPanel>
+                        </Border>
+                    </Popup>
                 </StackPanel>
             </DockPanel>
         </Border>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Beispiel für die Monatsansicht der Zeiterfassung: ein Journal mit einer Zeile je Tag und einem Satz als Zusammenfassung.">
+<title>Zeiterfassung, Monat (Beispiel)</title>
+<style>
+/* Hallmark · v2.0.0 · direction: ledger (hand-set, no preset theme) · genre: utilitarian · job: read the month, open one day
+critique: day rows read as a ledger, the sum is one sentence, nothing is repeated per row, no card grid
+waive: none */
+
+:root {
+  --paper: #F4F1EA;
+  --ink: #1F1D1A;
+  --ink-soft: #5E5A51;
+  --rule: #D9D3C6;
+  --minus: #A23B1E;
+  --plus: #2F6B4F;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: "Segoe UI", system-ui, sans-serif;
+  --measure: 880px;
+}
+
+html, body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.page {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+/* Kopf: Wortmarke und Navigation als Fließtext, der aktive Punkt ist unterstrichen */
+.top {
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.wordmark {
+  font-family: var(--serif);
+  font-size: 20px;
+  margin-right: auto;
+}
+
+.nav a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+}
+
+.nav a:hover {
+  color: var(--ink);
+}
+
+.nav a:active {
+  color: var(--ink);
+}
+
+.nav a[aria-current="page"] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* Die Überschrift und die Schaltflächen des Monats */
+.month {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 40px 0 8px;
+}
+
+.month h1 {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.1;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.steps button {
+  font: inherit;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 4px 12px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+.steps button:hover {
+  border-color: var(--ink);
+}
+
+.steps button:active {
+  background: var(--rule);
+}
+
+.steps button:disabled {
+  color: var(--ink-soft);
+  cursor: default;
+}
+
+/* Die Zusammenfassung ist der Hauptinhalt: ein Satz und eine Zahl */
+.summary {
+  font-size: 20px;
+  max-width: 34em;
+  margin: 8px 0 32px;
+}
+
+.balance {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 16px 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+}
+
+.balance .figure {
+  font-family: var(--serif);
+  font-size: 56px;
+  line-height: 1;
+  color: var(--minus);
+  font-variant-numeric: tabular-nums;
+}
+
+.balance .label {
+  color: var(--ink-soft);
+}
+
+.balance .side {
+  margin-left: auto;
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+/* Das Journal: eine Zeile je Tag, Linien statt Karten, Zahlen rechtsbündig */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ledger th {
+  text-align: left;
+  font-weight: 400;
+  color: var(--ink-soft);
+  font-size: 14px;
+  padding: 8px 12px 8px 0;
+  border-bottom: 1px solid var(--ink);
+}
+
+.ledger td {
+  padding: 12px 12px 12px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+
+.ledger .num {
+  text-align: right;
+  padding-right: 0;
+}
+
+.ledger tr.weekend td,
+.ledger tr.holiday td {
+  color: var(--ink-soft);
+}
+
+.ledger .day {
+  width: 140px;
+}
+
+.ledger .note {
+  color: var(--ink-soft);
+}
+
+.ledger .minus { color: var(--minus); }
+.ledger .plus  { color: var(--plus); }
+
+/* Der Tag selbst ist der Link: kein Pfeil, keine Schaltfläche pro Zeile */
+.ledger a.open {
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ledger a.open:hover {
+  border-bottom-color: var(--ink);
+}
+
+.ledger a.open:active {
+  color: var(--ink-soft);
+}
+
+.foot {
+  margin-top: 24px;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .month { flex-direction: column; align-items: flex-start; }
+  .balance { flex-wrap: wrap; }
+  .balance .side { margin-left: 0; text-align: left; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="top">
+    <span class="wordmark">Zeiterfassung</span>
+    <nav class="nav" aria-label="Hauptnavigation">
+      <a href="#heute">Heute</a>
+      <a href="#monat" aria-current="page">Monat</a>
+      <a href="#einstellungen">Einstellungen</a>
+      <a href="#hilfe">Hilfe</a>
+    </nav>
+  </header>
+
+  <section class="month" id="monat">
+    <h1>November 2026</h1>
+    <div class="steps">
+      <button type="button">Vorheriger Monat</button>
+      <button type="button">Nächster Monat</button>
+    </div>
+  </section>
+
+  <p class="summary">Im November hast du 25:00 Stunden gearbeitet. Bis zu deinem Soll fehlen noch 15:00.</p>
+
+  <div class="balance">
+    <span class="figure">−15:00</span>
+    <span class="label">Saldo am Monatsende</span>
+    <span class="side">Resturlaub 29,5 Tage</span>
+  </div>
+
+  <table class="ledger">
+    <thead>
+      <tr>
+        <th class="day">Tag</th>
+        <th>Hinweis</th>
+        <th class="num">Ist</th>
+        <th class="num">Soll</th>
+        <th class="num">Saldo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="holiday">
+        <td>So 01.11.</td>
+        <td class="note">Allerheiligen, Feiertag</td>
+        <td class="num"></td>
+        <td class="num"></td>
+        <td class="num"></td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-02">Mo 02.11.</a></td>
+        <td class="note"></td>
+        <td class="num"></td>
+        <td class="num">8:00</td>
+        <td class="num minus">−8:00</td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-03">Di 03.11.</a></td>
+        <td class="note">Freizeitausgleich</td>
+        <td class="num"></td>
+        <td class="num">8:00</td>
+        <td class="num minus">−8:00</td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-04">Mi 04.11.</a></td>
+        <td class="note">Urlaub halber Tag, Müller GmbH</td>
+        <td class="num">4:00</td>
+        <td class="num">4:00</td>
+        <td class="num">0:00</td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-05">Do 05.11.</a></td>
+        <td class="note">Müller GmbH 5:30, Huber AG 2:30</td>
+        <td class="num">8:00</td>
+        <td class="num">8:00</td>
+        <td class="num">0:00</td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-06">Fr 06.11.</a></td>
+        <td class="note">Krank halber Tag, Huber AG</td>
+        <td class="num">4:00</td>
+        <td class="num">4:00</td>
+        <td class="num">0:00</td>
+      </tr>
+      <tr class="weekend">
+        <td>Sa 07.11.</td>
+        <td class="note"></td>
+        <td class="num"></td>
+        <td class="num"></td>
+        <td class="num"></td>
+      </tr>
+      <tr class="weekend">
+        <td>So 08.11.</td>
+        <td class="note"></td>
+        <td class="num"></td>
+        <td class="num"></td>
+        <td class="num"></td>
+      </tr>
+      <tr>
+        <td><a class="open" href="#tag-09">Mo 09.11.</a></td>
+        <td class="note">Müller GmbH 9:00</td>
+        <td class="num">9:00</td>
+        <td class="num">8:00</td>
+        <td class="num plus">+1:00</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="foot">Ein Tag öffnet seine Buchungen, Pausen und Abwesenheiten. Die Zahlen sind Beispieldaten.</p>
+
+</div>
+</body>
+</html>

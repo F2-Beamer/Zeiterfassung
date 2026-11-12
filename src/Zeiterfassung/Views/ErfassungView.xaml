@@ -37,7 +37,7 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSelected}" Value="True">
                                                 <Setter Property="BorderBrush" Value="{StaticResource BrushAccent}" />
-                                                <Setter Property="Background" Value="#0C4A6E" />
+                                                <Setter Property="Background" Value="{StaticResource BrushSelected}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>

@@ -3,16 +3,17 @@
                     xmlns:sys="clr-namespace:System.Windows;assembly=PresentationFramework">
 
     <!-- Design B1: Dunkel, Fokus zentriert -->
-    <Color x:Key="ColorBackground">#0F172A</Color>
-    <Color x:Key="ColorSurface">#1E293B</Color>
-    <Color x:Key="ColorBorder">#334155</Color>
-    <Color x:Key="ColorAccent">#38BDF8</Color>
-    <Color x:Key="ColorText">#E2E8F0</Color>
-    <Color x:Key="ColorTextStrong">#F8FAFC</Color>
-    <Color x:Key="ColorTextMuted">#94A3B8</Color>
-    <Color x:Key="ColorSuccess">#4ADE80</Color>
-    <Color x:Key="ColorWarning">#FBBF24</Color>
-    <Color x:Key="ColorDanger">#F87171</Color>
+    <Color x:Key="ColorBackground">#F4F1EA</Color>
+    <Color x:Key="ColorSurface">#FBF9F4</Color>
+    <Color x:Key="ColorBorder">#D9D3C6</Color>
+    <Color x:Key="ColorAccent">#1D4E5F</Color>
+    <Color x:Key="ColorText">#1F1D1A</Color>
+    <Color x:Key="ColorTextStrong">#14120F</Color>
+    <Color x:Key="ColorTextMuted">#5E5A51</Color>
+    <Color x:Key="ColorSuccess">#2F6B4F</Color>
+    <Color x:Key="ColorWarning">#8A5A00</Color>
+    <Color x:Key="ColorDanger">#A23B1E</Color>
+    <Color x:Key="ColorSelected">#DCE8E4</Color>
 
     <SolidColorBrush x:Key="BrushBackground" Color="{StaticResource ColorBackground}" />
     <SolidColorBrush x:Key="BrushSurface" Color="{StaticResource ColorSurface}" />
@@ -24,6 +25,7 @@
     <SolidColorBrush x:Key="BrushSuccess" Color="{StaticResource ColorSuccess}" />
     <SolidColorBrush x:Key="BrushWarning" Color="{StaticResource ColorWarning}" />
     <SolidColorBrush x:Key="BrushDanger" Color="{StaticResource ColorDanger}" />
+    <SolidColorBrush x:Key="BrushSelected" Color="{StaticResource ColorSelected}" />
 
     <!-- Systemfarben überschreiben: Listen-Auswahl, Kalender (DatePicker) und Markierungen
          nutzen sonst helle Windows-Farben, auf denen die hellen Schriftfarben unlesbar werden. -->
@@ -33,7 +35,7 @@
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.ControlTextBrushKey}" Color="{StaticResource ColorText}" />
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.ControlDarkBrushKey}" Color="{StaticResource ColorBorder}" />
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.ControlLightBrushKey}" Color="{StaticResource ColorBorder}" />
-    <SolidColorBrush x:Key="{x:Static sys:SystemColors.HighlightBrushKey}" Color="#0C4A6E" />
+    <SolidColorBrush x:Key="{x:Static sys:SystemColors.HighlightBrushKey}" Color="{StaticResource ColorSelected}" />
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.HighlightTextBrushKey}" Color="{StaticResource ColorTextStrong}" />
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.InactiveSelectionHighlightBrushKey}" Color="{StaticResource ColorBorder}" />
     <SolidColorBrush x:Key="{x:Static sys:SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="{StaticResource ColorTextStrong}" />
@@ -46,9 +48,10 @@
         <Setter Property="FontSize" Value="14" />
     </Style>
 
-    <Style TargetType="TextBlock">
-        <Setter Property="Foreground" Value="{StaticResource BrushText}" />
-    </Style>
+    <!-- Keine Schriftfarbe hier: TextBlocks erben die Farbe vom Fenster oder Button. So bekommt der Text
+         in Akzentknöpfen die helle Schrift, und ein Textfeld in einem Knopf setzt die Farbe nicht selbst. -->
+    <Style TargetType="TextBlock" />
+
 
     <!-- Pill-Tab für die Navigation -->
     <Style x:Key="NavTabButton" TargetType="Button">
@@ -77,7 +80,7 @@
     <!-- Primär-Button (z. B. „Stoppen &amp; buchen“) -->
     <Style x:Key="PrimaryPillButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource BrushAccent}" />
-        <Setter Property="Foreground" Value="{StaticResource BrushBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource BrushSurface}" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Padding" Value="18,8" />
         <Setter Property="BorderThickness" Value="0" />

@@ -56,7 +56,7 @@ public class MonatViewModelTests : IDisposable
 
         var row = CreateViewModel().Days.Single(d => d.Date == Day);
 
-        row.Note.Should().Be("Müller GmbH 8:30  ·  Huber AG 2:00");
+        row.Note.Should().Be("Müller GmbH 8:30, Huber AG 2:00");
     }
 
     [Fact]
@@ -75,6 +75,17 @@ public class MonatViewModelTests : IDisposable
         var row = CreateViewModel().Days.Single(d => d.Date == Day);
 
         row.Note.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void Zusammenfassung_nennt_Ist_und_fehlende_Stunden_als_Satz()
+    {
+        var mueller = _customers.AddCustomer("Müller GmbH").Id;
+        AddBooking(mueller, 8, 12);
+
+        var summary = CreateViewModel().SummaryText;
+
+        summary.Should().StartWith("Im Januar hast du 4:00 Stunden gearbeitet.");
     }
 
     private sealed class NoopDayDialog : IDayDialog

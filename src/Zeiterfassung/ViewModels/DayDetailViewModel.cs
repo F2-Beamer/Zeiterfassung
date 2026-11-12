@@ -12,7 +12,7 @@ public sealed record AbsenceOption(AbsenceType Type, string Label);
 public sealed record DayBookingRow(string Time, string Customer, string Break, string Net, string Note)
 {
     /// <summary>Notiz mit Trenner für die Kundenzeile, leer wenn keine Notiz vorhanden ist.</summary>
-    public string NoteSuffix => string.IsNullOrEmpty(Note) ? string.Empty : "  ·  " + Note;
+    public string NoteSuffix => string.IsNullOrEmpty(Note) ? string.Empty : " (" + Note + ")";
 }
 
 public sealed record DayAbsenceRow(int Id, string Type, string Portion, string Note);
@@ -157,7 +157,7 @@ public partial class DayDetailViewModel : ObservableObject
         parts.Add($"Ist {TimeFormat.Hm(day.ActualMinutes)}");
         parts.Add($"Soll {TimeFormat.Hm(day.TargetMinutes)}");
         parts.Add($"Saldo {TimeFormat.Signed(day.BalanceMinutes)}");
-        Summary = string.Join("  ·  ", parts);
+        Summary = string.Join(", ", parts);
 
         NoBookings = Bookings.Count == 0;
         NoAbsences = Absences.Count == 0;
