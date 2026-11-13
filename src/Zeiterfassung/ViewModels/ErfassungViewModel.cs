@@ -42,8 +42,8 @@ public partial class ErfassungViewModel(
     [ObservableProperty]
     private string _endText = "16:00";
 
-    [ObservableProperty]
-    private string _breakText = "0";
+    /// <summary>Pause der gerade bearbeiteten Buchung; bleibt beim Speichern erhalten.</summary>
+    private int _editingBreakMinutes;
 
     [ObservableProperty]
     private string _note = string.Empty;
@@ -145,11 +145,6 @@ public partial class ErfassungViewModel(
                 throw new DomainException("Start und Ende bitte im Format HH:mm angeben.");
             }
 
-            if (!int.TryParse(BreakText, out var breakMinutes))
-            {
-                throw new DomainException("Die Pause bitte in Minuten angeben.");
-            }
-
             var entry = new TimeEntry
             {
                 Id = _editingId ?? 0,
@@ -157,7 +152,7 @@ public partial class ErfassungViewModel(
                 Date = DateOnly.FromDateTime(SelectedDate),
                 Start = start,
                 End = end,
-                BreakMinutes = breakMinutes,
+                BreakMinutes = _editingId is null ? 0 : _editingBreakMinutes,
                 Note = string.IsNullOrWhiteSpace(Note) ? null : Note.Trim()
             };
 
@@ -190,7 +185,7 @@ public partial class ErfassungViewModel(
         SelectedCustomer = ActiveCustomers.FirstOrDefault(c => c.Id == entry.CustomerId) ?? entry.Customer;
         StartText = entry.Start.ToString("HH:mm");
         EndText = entry.End.ToString("HH:mm");
-        BreakText = entry.BreakMinutes.ToString();
+        _editingBreakMinutes = entry.BreakMinutes;
         Note = entry.Note ?? string.Empty;
         FormTitle = "Buchung bearbeiten";
         ErrorMessage = null;
@@ -222,7 +217,7 @@ public partial class ErfassungViewModel(
         FormTitle = "Neue Buchung";
         StartText = "08:00";
         EndText = "16:00";
-        BreakText = "0";
+        _editingBreakMinutes = 0;
         Note = string.Empty;
     }
 

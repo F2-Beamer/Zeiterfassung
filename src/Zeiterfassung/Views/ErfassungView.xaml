@@ -64,9 +64,6 @@
                     </StackPanel>
                 </StackPanel>
 
-                <TextBlock Text="Pause (Minuten)" Style="{StaticResource Muted}" />
-                <TextBox Text="{Binding BreakText, UpdateSourceTrigger=PropertyChanged}" />
-
                 <TextBlock Text="Notiz" Style="{StaticResource Muted}" />
                 <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" />
 

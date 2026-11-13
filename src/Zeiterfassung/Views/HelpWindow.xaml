@@ -27,7 +27,7 @@
                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,6"
                            Text="Timer: Klicke auf eine Kundenkachel, um die Zeit für diesen Kunden zu starten. Mit Pause und Fortsetzen unterbrichst du den Timer. Mit Stopp wird die Buchung gespeichert. Läuft der Timer für einen anderen Kunden, wechselt die Kachel den Kunden. Timer unter einer Minute werden verworfen." />
                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,6"
-                           Text="Manuelle Buchung: Trage Start und Ende im Format HH:mm ein (z. B. 08:00). Die Zeitfelder nehmen nur Ziffern und einen Doppelpunkt an. Wähle den Kunden und speichere. Die Pause in Minuten kann zusätzlich angegeben werden. Mit Bearbeiten und Löschen änderst du bestehende Buchungen des Tages." />
+                           Text="Manuelle Buchung: Trage Start und Ende im Format HH:mm ein (z. B. 08:00). Die Zeitfelder nehmen nur Ziffern und einen Doppelpunkt an. Wähle den Kunden und speichere. Pausen trägst du im Bereich „Pause (ohne Kunde)“ mit Beginn und Ende ein. Mit Bearbeiten und Löschen änderst du bestehende Buchungen des Tages." />
                 <TextBlock TextWrapping="Wrap" Margin="0,0,0,12"
                            Text="Pause ohne Kunde: Unter „Pause (ohne Kunde)“ trägst du Beginn und Ende einer Pause ein. Sie wird unabhängig von einem Kunden von der Ist-Zeit des Tages abgezogen. Überschneidende Pausen werden abgelehnt." />
 
