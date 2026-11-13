@@ -21,3 +21,6 @@ logs/
 .idea/
 *.user
 *.suo
+
+# Sicherheitsbericht (enthält Befunde, nicht veröffentlichen)
+audit-bericht/
