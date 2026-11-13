@@ -85,7 +85,7 @@ public partial class App : Application
 
         _services.GetRequiredService<BackupService>().AutoBackupOnStart();
 
-        Log.Information("Start. Datenordner: {DataDirectory}", paths.DataDirectory);
+        Log.Information("Start");
 
         var mainWindow = _services.GetRequiredService<MainWindow>();
         mainWindow.Show();
