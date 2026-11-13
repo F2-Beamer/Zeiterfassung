@@ -12,7 +12,7 @@ Lokale Windows-Anwendung zur Zeiterfassung (WPF, .NET 10, SQLite). Die Anwendung
 
 - **Heute**: Live-Timer per Klick auf einen Kunden. Pause-Button, „Stoppen & buchen“. Tagesbuchungen, Ist, Soll, Saldo und Überstundenstand.
 - **Monat**: Tagesliste mit Ist, Soll und Saldo, Monatssummen und Überstundenstand am Monatsende.
-- **Erfassung**: Manuelle Buchungen mit Datum, Kunde, Start, Ende, Pause und Notiz. Überlappungen und Buchungen über Mitternacht werden abgelehnt.
+- **Erfassung**: Manuelle Buchungen mit Datum, Kunde, Start, Ende und Notiz. Pausen ohne Kunde werden im selben Bereich eingetragen. Überlappungen und Buchungen über Mitternacht werden abgelehnt.
 - **Abwesenheit**: Urlaub, Krank und Freizeitausgleich, ganz oder halb. Anzeige des Urlaubskontos je Jahr.
 - **Einstellungen**: Kunden (archivieren statt löschen), Soll-Arbeitszeit mit Gültigkeitsdatum, Urlaubsanspruch und Übertrag, Überstunden-Startsaldo, Bundesland, Feiertage (Abruf über date.nager.at), Datensicherung.
 
