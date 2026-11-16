@@ -1,6 +1,6 @@
 namespace Zeiterfassung.Models;
 
-/// <summary>Pause ohne Kundenbezug. Ihre Dauer wird von der Ist-Zeit des Tages abgezogen.</summary>
+/// <summary>Pause ohne Kundenbezug. Soweit sie in eine Buchung fällt, wird sie von deren Zeit abgezogen.</summary>
 public class PauseEntry
 {
     public int Id { get; set; }
