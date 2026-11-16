@@ -1,5 +1,13 @@
 # Release Notes
 
+## Version 1.1.2
+
+### Behoben
+- **Ist-Zeit mit Pausen ohne Kunde:** Eine Pause in der Lücke zwischen zwei Buchungen wurde bisher trotzdem von der Arbeitszeit abgezogen. Jetzt mindert eine Pause die Zeit nur noch, soweit sie in eine Buchung fällt. Beispiel: Buchungen 07:00–12:00 und 12:30–16:00 mit Pause 12:00–12:30 ergeben 8:30 Stunden (vorher 8:00).
+
+### Technik
+- Tests: 68 bestanden (2 neu für Pausen in Lücken und Teilüberlappung).
+
 ## Version 1.1.1
 
 ### Änderungen

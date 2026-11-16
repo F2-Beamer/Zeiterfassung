@@ -18,8 +18,9 @@ public static class DayCalculator
         IReadOnlyList<PauseEntry>? pauses = null)
     {
         var baseTarget = TargetCalculator.BaseTargetMinutes(profile, date.DayOfWeek);
-        // Pausen ohne Kundenbezug werden von der Netto-Zeit der Buchungen abgezogen.
-        var pauseMinutes = pauses?.Sum(p => p.Minutes) ?? 0;
+        // Pausen ohne Kundenbezug mindern die Ist-Zeit nur, soweit sie in eine Buchung fallen.
+        // Liegt eine Pause in einer Lücke zwischen zwei Buchungen, ist sie dort schon nicht gezählt.
+        var pauseMinutes = pauses is null ? 0 : OverlapWithEntries(pauses, entries);
         var actual = Math.Max(0, entries.Sum(e => e.NetMinutes) - pauseMinutes);
 
         var isHoliday = holidayName is not null;
@@ -37,5 +38,25 @@ public static class DayCalculator
             : 0m;
 
         return new DayResult(date, entries, absences, holidayName, actual, target, vacationDays);
+    }
+
+    /// <summary>Summe der Minuten, in denen eine Pause in eine Buchung fällt.</summary>
+    private static int OverlapWithEntries(IReadOnlyList<PauseEntry> pauses, IReadOnlyList<TimeEntry> entries)
+    {
+        var total = 0;
+        foreach (var pause in pauses)
+        {
+            foreach (var entry in entries)
+            {
+                var start = pause.Start > entry.Start ? pause.Start : entry.Start;
+                var end = pause.End < entry.End ? pause.End : entry.End;
+                if (end > start)
+                {
+                    total += (int)(end - start).TotalMinutes;
+                }
+            }
+        }
+
+        return total;
     }
 }
